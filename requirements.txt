@@ -1,0 +1,4 @@
+click
+rich
+packaging
+rich-click 

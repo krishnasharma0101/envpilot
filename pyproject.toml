@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "envpilot"
+version = "0.1.0"
+description = "A unified Python environment manager and synchronizer."
+readme = "README.md"
+requires-python = ">=3.7"
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "click",
+    "rich",
+    "packaging",
+    "rich-click",
+]
+
+[project.urls]
+Homepage = "https://github.com/krishnasharma0101/envpilot"
+"Bug Tracker" = "https://github.com/krishnasharma0101/envpilot/issues"
+
+[project.scripts]
+envpilot = "envpilot.cli:cli"

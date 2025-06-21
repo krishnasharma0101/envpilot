@@ -1,0 +1,22 @@
+{
+  "signature": "2ad432b82040836b5d73f652e00e6d35596e8a578a989dde23edeae2e56a8842",
+  "environment": {
+    "metadata": {
+      "source_host": "DESKTOP-G84C95H",
+      "platform": "win32",
+      "architecture": "AMD64",
+      "python_version": "3.12.10",
+      "export_timestamp": "2025-06-21T08:40:40.291732Z"
+    },
+    "packages": {
+      "click": "8.2.1",
+      "colorama": "0.4.6",
+      "markdown-it-py": "3.0.0",
+      "mdurl": "0.1.2",
+      "packaging": "25.0",
+      "pip": "25.0.1",
+      "pygments": "2.19.1",
+      "rich": "14.0.0"
+    }
+  }
+}
