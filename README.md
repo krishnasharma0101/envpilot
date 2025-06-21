@@ -1,111 +1,126 @@
-# envpilot 🧭
+# 🚀 envpilot
 
-**A unified Python environment manager and synchronizer.**
+**envpilot** is a smart, space-saving, cross-platform Python environment manager. It helps developers **automatically manage, match, clean, and sync** virtual environments — so you spend less time configuring and more time building.
 
-`envpilot` is a command-line tool that helps you discover, manage, and synchronize Python virtual environments to promote reuse, save disk space, and streamline your development workflow across multiple machines.
-
----
-
-## Core Features
-
--   **Discover & List:** Scans your system to find all Python environments.
--   **Intelligent Matching:** Finds the best existing environment for a new project's `requirements.txt`.
--   **Effortless Creation:** Creates new environments in your project directory by default.
--   **Direct Activation:** Instantly launches a fully activated sub-shell.
--   **Cleanup:** Identifies and removes orphaned environments.
--   **Sync & Share:** Exports and imports environment definitions via a portable lock file.
+> Think of it as your personal co-pilot for Python virtual environments.
 
 ---
 
-## Installation
+## ✨ Features
 
-Ensure you have Python 3.7+ installed. Then, install `envpilot` using pip:
+- 🧭 `envpilot list`: Scan and view all virtual environments on your system.
+- 🔍 `envpilot match requirements.txt`: Match existing environments to a requirements file to avoid duplicate env creation.
+- ⚙️ `envpilot create <name> [--requirements=req.txt]`: Create a new environment with optional dependencies.
+- 🚀 `envpilot activate <name>`: Easily activate a virtual environment.
+- 🧹 `envpilot clean`: Remove unused, orphaned, or duplicate environments.
+- 🔄 `envpilot sync export`: Export your environment to a lock file for sharing or syncing across devices.
+- 📦 `envpilot sync import`: Recreate environments from a `.envpilot-lock.json` file.
+
+---
+
+## 📦 Installation
+
+You can install directly from the GitHub repository:
 
 ```bash
-pip install .
+pip install git+https://github.com/krishnasharma0101/envpilot.git
 ```
 
-To set up for local development, install in editable mode:
-
-```bash
-pip install -e .
-```
+> Requires Python 3.7+
 
 ---
 
-## Usage
+## 🧪 Usage
 
-Below are examples of the core commands. For detailed options on any command, run `envpilot <command> -h`.
-
-### `envpilot list`
-Scan and list all Python environments found on your system.
-
+### 🗂️ List environments
 ```bash
 envpilot list
 ```
-![list command output](https://i.imgur.com/example.png) <!-- Placeholder -->
 
-### `envpilot create [NAME]`
-Create a new virtual environment. By default, it creates a `venv` folder in the current directory.
-
-```bash
-# Create 'venv' in the current directory
-envpilot create
-
-# Create an environment named 'my-app-env'
-envpilot create my-app-env
-
-# Create an environment and install packages from a file
-envpilot create -r requirements.txt
-```
-
-### `envpilot activate <NAME>`
-Launch a new, activated shell for the specified environment.
-
-```bash
-envpilot activate my-app-env
-```
-This will drop you into a new shell with the environment active: `(my-app-env) PS C:\>`. Type `exit` to leave.
-
-### `envpilot match <REQUIREMENTS_FILE>`
-Find the best existing environment for a project's requirements.
-
+### 🔍 Match requirements
 ```bash
 envpilot match requirements.txt
-
-# Match against a single, specific environment
-envpilot match requirements.txt --env my-app-env
 ```
-![match command output](https://i.imgur.com/example.png) <!-- Placeholder -->
 
-### `envpilot clean`
-Find and remove orphaned environments to save space.
-
+### ⚙️ Create environment
 ```bash
-# See which environments would be removed
-envpilot clean --dry-run
+envpilot create myenv --requirements requirements.txt
+```
 
-# Remove them after confirming
+### 🚀 Activate environment
+```bash
+envpilot activate myenv
+```
+
+### 🧹 Clean up environments
+```bash
 envpilot clean
 ```
 
-### `envpilot sync`
-Export and import environment configurations using a lock file.
-
+### 🔄 Export & Import
 ```bash
-# Export 'my-app-env' to a lock file
-envpilot sync export my-app-env -f my-app.lock
-
-# Create a new environment from the lock file
-envpilot sync import my-app.lock new-app-from-lock
+envpilot sync export    # Creates .envpilot-lock.json
+envpilot sync import    # Rebuilds environment from lock
 ```
 
 ---
 
-## Contributing
+## 📁 Folder Structure
 
-Contributions are welcome! Please see the `CONTRIBUTING.md` file for details on how to get started.
+```
+envpilot/
+├── envpilot/                   # Core package folder
+│   ├── __init__.py
+│   ├── cli.py                  # Main CLI using click or argparse
+│   ├── scanner.py              # Scans system for all environments
+│   ├── matcher.py              # Matches envs to requirements.txt
+│   ├── manager.py              # Env creation, deletion, activation
+│   ├── syncer.py               # Export/import environment lock files
+│   ├── cleaner.py              # Identifies unused/duplicate envs
+│   ├── metadata.py             # Stores env metadata (size, timestamp, link)
+│   └── utils.py                # Helpers (file ops, hashing, etc.)
+├── tests/
+│   ├── test_cli.py
+│   ├── test_matcher.py
+│   ├── test_scanner.py
+│   └── test_syncer.py
+├── requirements.txt
+├── setup.py
+├── pyproject.toml
+├── README.md
+└── .envpilot/                 # Internal metadata storage for environments
+```
 
-## License
+---
 
-This project is licensed under the MIT License. See the `LICENSE` file for details. 
+## 🎯 Goals
+
+- Save disk space by avoiding redundant environments.
+- Make environment reuse easy and intelligent.
+- Improve cross-machine development reproducibility.
+- Provide a minimal, CLI-first experience.
+
+---
+
+## 🧠 Future Scope
+
+- ✅ GUI dashboard for managing environments visually
+- ✅ GitHub Action for auto-matching and syncing CI environments
+- ✅ AI-enhanced recommendations: Suggest required dependencies by scanning project files or a prompt
+- ✅ Remote environment inspector (sync with cloud for viewing all local+remote envs)
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome! If you have feature suggestions, bug reports, or want to help build new modules, feel free to open an issue or PR.
+
+---
+
+## 🪪 License
+
+MIT License — use it, build on it, and share it.
+
+---
+
+> Made with 💻 by [Krishna Sharma](https://github.com/krishnasharma0101)
