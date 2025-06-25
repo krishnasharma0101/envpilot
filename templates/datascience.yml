@@ -1,0 +1,8 @@
+name: datascience
+description: Data science and machine learning environment
+dependencies:
+  - numpy
+  - pandas
+  - matplotlib
+  - scikit-learn
+  - jupyter

@@ -1,0 +1,11 @@
+name: machinelearning
+description: Machine learning and data science environment
+dependencies:
+  - numpy
+  - pandas
+  - matplotlib
+  - scikit-learn
+  - seaborn
+  - xgboost
+  - lightgbm
+  - jupyter

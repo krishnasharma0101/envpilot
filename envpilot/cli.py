@@ -7,7 +7,7 @@ from . import matcher
 from . import manager
 from . import cleaner
 from . import syncer
-
+import yaml
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
 def cli():
     """
@@ -116,27 +116,83 @@ def match_reqs(requirements_file, env_name):
 @click.argument("name", default="venv", required=False)
 @click.option("--requirements", "-r", "requirements_file", type=click.Path(exists=True, dir_okay=False), help="Path to a requirements.txt file to install packages from.")
 @click.option("--path", "-p", "creation_path", type=click.Path(file_okay=False, writable=True), help="The directory where the environment will be created. Defaults to the current directory.")
-def create_env(name, requirements_file, creation_path):
+@click.option("--template", "-t", "template_name", help="Name of the environment template (YAML) to use.")
+def create_env(name, requirements_file, creation_path, template_name):
     """
     Creates a new Python virtual environment.
-    
-    By default, it creates a 'venv' in the current working directory.
-    You can provide a NAME to customize the folder name of the environment.
     """
     console = Console()
-    
-    with console.status(f"[bold green]Creating environment '{name}'...") as status:
-        env_path, error = manager.create_environment(name, requirements_file, creation_path)
 
-    if error:
-        if env_path:
-             console.print(f"⚠️  Environment '{name}' created at {env_path} but with an error:", style="bold yellow")
-             console.print(error, style="yellow")
-        else:
-            console.print(f"Error: {error}", style="bold red")
-        return
+    dependencies = None
+    if template_name:
+        template_path = os.path.join("templates", f"{template_name}.yml")
+        if not os.path.exists(template_path):
+            console.print(f"[bold red]Template '{template_name}' not found in templates/ directory.[/bold red]")
+            return
+        with open(template_path, "r") as f:
+            try:
+                config = yaml.safe_load(f)
+                dependencies = config.get("dependencies", [])
+            except Exception as e:
+                console.print(f"[bold red]Failed to load template: {e}[/bold red]")
+                return
+
+    with console.status(f"[bold green]Creating environment '{name}'...") as status:
+        env_path, error = manager.create_environment(
+        name,
+        requirements_path=requirements_file,  # <-- FIXED!
+        base_path=creation_path,
+        dependencies=dependencies  # Pass dependencies to manager
+        )
+        if error:
+            if env_path:
+                console.print(f"⚠️  Environment '{name}' created at {env_path} but with an error:", style="bold yellow")
+                console.print(error, style="yellow")
+            else:
+                console.print(f"Error: {error}", style="bold red")
+            return
 
     console.print(f"✅ Environment '{name}' created successfully at {env_path}", style="bold green")
+    if dependencies:
+        console.print(f"📦 Installed template dependencies: [cyan]{', '.join(dependencies)}[/cyan]")
+
+
+@cli.command("list-templates")
+def list_templates():
+    """
+    Lists available environment templates.
+    """
+    console = Console()
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    templates_dir = os.path.join(BASE_DIR, "templates")
+
+    if not os.path.isdir(templates_dir):
+        console.print("[bold red]No templates directory found.[/bold red]")
+        return
+
+    files = [f for f in os.listdir(templates_dir) if f.endswith(".yml")]
+    if not files:
+        console.print("[bold yellow]No templates found in the templates/ directory.[/bold yellow]")
+        return
+
+    table = Table(title="Available Environment Templates", show_header=True, header_style="bold magenta")
+    table.add_column("Template Name", style="cyan")
+    table.add_column("Description", style="green")
+
+    for filename in files:
+        path = os.path.join(templates_dir, filename)
+        try:
+            with open(path, "r") as f:
+                config = yaml.safe_load(f)
+                name = config.get("name", filename.replace(".yml", ""))
+                desc = config.get("description", "-")
+                table.add_row(name, desc)
+        except Exception:
+            table.add_row(filename.replace(".yml", ""), "[error reading file]")
+
+    console.print(table)
+
+
 
 @cli.command("activate")
 @click.argument("name")

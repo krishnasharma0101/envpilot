@@ -1,0 +1,8 @@
+name: fastapi
+description: FastAPI web API environment
+dependencies:
+  - fastapi
+  - uvicorn
+  - httpx
+  - pydantic
+  - pytest

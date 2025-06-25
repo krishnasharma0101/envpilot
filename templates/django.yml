@@ -1,0 +1,5 @@
+name: django
+description: Django web development environment
+dependencies:
+  - django
+  - djangorestframework
