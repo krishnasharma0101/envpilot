@@ -4,9 +4,10 @@ import sys
 import venv
 from . import scanner
 
-def create_environment(name, requirements_path=None, base_path=None):
+def create_environment(name, requirements_path=None, base_path=None, dependencies=None):
     """
-    Creates a new virtual environment and optionally installs packages.
+    Creates a new virtual environment and optionally installs packages from requirements.txt
+    and/or a list of dependencies (e.g., from a template).
     """
     # Default to the current working directory if no base_path is provided
     if base_path:
@@ -19,24 +20,34 @@ def create_environment(name, requirements_path=None, base_path=None):
         return None, f"An environment already exists at '{env_path}'."
 
     try:
-        # Create the virtual environment
+        # 1. Create the virtual environment
         builder = venv.EnvBuilder(with_pip=True)
         builder.create(env_path)
 
-        # Install packages if a requirements file is provided
+        # 2. Determine pip executable path
+        if sys.platform == "win32":
+            pip_executable = os.path.join(env_path, "Scripts", "pip.exe")
+        else:
+            pip_executable = os.path.join(env_path, "bin", "pip")
+
+        # 3. Install packages from requirements.txt if provided
         if requirements_path:
-            if sys.platform == "win32":
-                pip_executable = os.path.join(env_path, "Scripts", "pip.exe")
-            else:
-                pip_executable = os.path.join(env_path, "bin", "pip")
-            
             subprocess.run(
                 [pip_executable, "install", "-r", requirements_path],
                 check=True,
                 capture_output=True,
                 text=True
             )
-        
+
+        # 4. Install dependencies from template if provided
+        if dependencies:
+            subprocess.run(
+                [pip_executable, "install"] + dependencies,
+                check=True,
+                capture_output=True,
+                text=True
+            )
+
         return env_path, None
     except subprocess.CalledProcessError as e:
         # If installation fails, still return the created env path but with an error
@@ -59,7 +70,7 @@ def launch_shell(name):
             # For Windows, launch PowerShell with the activation script
             script_path = os.path.join(env_path, "Scripts", "Activate.ps1")
             if not os.path.exists(script_path):
-                 return f"Activation script not found at {script_path}"
+                return f"Activation script not found at {script_path}"
             
             print(f"Launching activated shell for '{name}'. Type 'exit' to leave.")
             subprocess.run(
@@ -81,4 +92,4 @@ def launch_shell(name):
     except Exception as e:
         return f"Failed to launch shell: {e}"
     
-    return None # Should not be reached on success for Unix 
+    return None  # Should not be reached on success for Unix

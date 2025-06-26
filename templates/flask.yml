@@ -1,0 +1,9 @@
+name: flask
+description: Flask web development environment
+dependencies:
+  - flask
+  - flask_sqlalchemy
+  - flask_migrate
+  - flask_wtf
+  - requests
+  - pytest

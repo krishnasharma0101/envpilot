@@ -1,0 +1,8 @@
+name: scrapy
+description: Web scraping and crawling environment
+dependencies:
+  - scrapy
+  - requests
+  - beautifulsoup4
+  - lxml
+  - pandas
